@@ -11,6 +11,7 @@ body {
     align-items: center;
     /* height: 100vh; */
     min-height: 100vh;
+    padding: 0 10px;
     background-color: rgb(219, 110, 219);
 }
 
@@ -76,7 +77,22 @@ body {
     color: red;
 }
 
-:where .keyboard {
+:where(.game-model, .keyboard) button {
+    color: #fff;
+    color: #fff;
+    font-size: 1rem;
+
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: rgb(219, 110, 219);
+    border: none;
+    border-radius: 4px;
+    scale: 0.9;
+    transition: all 0.2s ease;
+
+}
+
+.keyboard {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
@@ -86,17 +102,9 @@ body {
 .keyboard button {
     /* width: calc(100% / 9 - 5px); */
     width: 40px;
-    color: #fff;
-    font-size: 1rem;
 
-    font-weight: 600;
-    text-transform: uppercase;
-    background-color: rgb(219, 110, 219);
-    border: none;
-    border-radius: 4px;
     padding: 7px 0;
-    scale: 0.9;
-    transition: all 0.2s ease;
+
 }
 
 .keyboard button:hover {
@@ -118,7 +126,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1;
-    /* display: none; */
+    display: none;
 }
 
 .game-model .content {
@@ -169,4 +177,18 @@ body {
     cursor: pointer;
     color: red;
     scale: 1;
+}
+
+@media screen and (max-width: 900px) {
+    .contianer {
+        width: 100%;
+        flex-direction: column;
+        padding: 30px;
+    }
+
+    .hangman-box img {
+        max-width: 100%;
+    }
+
+
 }
