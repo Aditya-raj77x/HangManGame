@@ -93,10 +93,12 @@
         const gamebox = document.querySelector(".gamebox button");
         const gamemodal = document.querySelector(".gamemodal");
         const gamemodalBtn = document.querySelector(".gamemodal button");
-
-        gamebox.addEventListener("click", () => {
-            gamemodal.classList.add("show");
-        })
+        const start = () => {
+            setTimeout(() => {
+                gamemodal.classList.add("show");
+            }, 1000)
+        }
+        gamebox.addEventListener("click", start)
         gamemodalBtn.addEventListener("click", () => {
             gamemodal.classList.remove("show");
         })
