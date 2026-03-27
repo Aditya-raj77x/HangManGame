@@ -6,102 +6,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             height: 100vh;
-            display: grid;
-            place-items: center;
+            background-color: chartreuse;
         }
 
-        .gamebox {
-            padding: 10px;
-            height: 200px;
-            width: 250px;
+        .container {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            width: 800px;
+            background-color: #fff;
+            padding: 60px 40px;
             align-items: center;
-            border-radius: 12px;
-            background-color: aquamarine;
+            justify-content: center;
+            border-radius: 20px;
+            gap: 40px;
         }
 
-        .gamebox h1 {
-            color: crimson;
+        .container .hangmanBox img {
+            max-width: 270px;
+
+        }
+
+        .hangmanBox h1 {
+            font-size: 1.45rem;
+            margin-top: 20px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .gameBox .wordDisplay {
+            display: flex;
+            margin-bottom: 40px;
+            /* background-color: red; */
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .gameBox .wordDisplay .letter {
+            width: 35px;
+            border-bottom: 4px solid #000;
+            list-style-type: none;
+            font-size: 20px;
+            text-align: center;
+            text-transform: uppercase;
             font-weight: bold;
-            text-transform: uppercase;
-            font-size: 32px;
         }
 
-        .gamebox button {
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 18px;
-            text-transform: uppercase;
-            color: black;
+        .gussed {
+            color: red;
+            font-size: 22px;
         }
 
-        .gamemodal {
-            padding: 10px;
-            height: 200px;
-            width: 250px;
+        .hintText,
+        .guessText {
+            margin: 20px 0px;
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .hintText b {
+            font-weight: 400;
+        }
+
+        .guessText b {
+            color: red;
+            font-weight: 400;
+        }
+
+        .keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .keyboard button {
+            padding: 2px;
+            border-radius: 4px;
+            border: 1px outset black;
+            color: #000;
+            background-image: linear-gradient(to bottom right, white, yellow);
+            font-size: 1rem;
+            /* width: calc(100% / 9 - 5px); */
+            width: 38px;
+            transition: all 0.5s ease;
+            text-transform: uppercase;
+            scale: 0.9;
+
+        }
+
+        .keyboard button:hover {
+            color: red;
+            background-image: linear-gradient(to bottom right, white, chartreuse);
+            scale: 1.02;
+            /* border: inset; */
+            /* width: 45px; */
+        }
+
+        .gameModal {
             position: fixed;
-            flex-direction: column;
+            z-index: 999;
+            background-color: rgba(0, 0, 0, 0.5);
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 12px;
-            background-color: palevioletred;
             pointer-events: none;
-            display: none;
+            opacity: 0;
         }
 
-        .gamemodal h1 {
-            color: crimson;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 32px;
+        .gameModal img {
+            max-width: 130px;
         }
 
-        .gamemodal button {
-            padding: 10px;
+        .gameModal .content {
+            background-color: #fff;
+            /* height: 220px; */
+            width: 350px;
             border-radius: 12px;
-            font-size: 18px;
-            text-transform: uppercase;
-            color: black;
-        }
-
-        :where(.gamebox, .gamemodal) button:hover {
-            background-color: rgb(228, 203, 60);
-            transition: all 0.8s ease;
-        }
-
-        .gamemodal.show {
             display: flex;
-            pointer-events: auto;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .gameModal .content h4 {
+            margin: 10px 0px;
+            font-size: 1.45rem;
+        }
+
+        .gameModal .content p {
+            font-size: 22px;
+            margin-bottom: 10px;
+
+        }
+
+        .gameModal .content b {
+            color: red;
+        }
+
+        .gameModal button {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px outset black;
+            color: black;
+            font-weight: bold;
+            background-image: linear-gradient(to bottom right, white, yellow);
+            font-size: 1rem;
+            /* width: calc(100% / 9 - 5px); */
+            /* width: 38px; */
+            margin: 10px 0px;
+            transition: all 0.5s ease;
+            scale: 0.9;
+        }
+
+        .gameModal button:hover {
+            /* font-size: 1.3rem; */
+            scale: 1.3;
         }
     </style>
 </head>
 
 <body>
-    <div class="gamemodal">
-        <h1>win/loss</h1>
-        <button>play again</button>
+    <div class="gameModal">
+        <div class="content">
+            <img src="./assets/lost.gif" alt="">
+            <h4>Game Over !</h4>
+            <p>The correct word was <b>html</b></p>
+            <button class="playAgain">Play Again</button>
+        </div>
     </div>
-    <div class="gamebox">
-        <h1>play game</h1>
-        <button>play</button>
+    <div class="container">
+        <div class="hangmanBox">
+            <img src="./assets/hangman-0.svg" alt="hangman pic">
+            <h1>Hangman Game</h1>
+        </div>
+        <div class="gameBox">
+            <ul class="wordDisplay">
+                <!-- <li class="letter"></li>
+                <li class="letter"></li>
+                <li class="letter"></li>
+                <li class="letter"></li>
+                <li class="letter"></li>
+                <li class="letter"></li>
+                <li class="letter"></li> -->
+            </ul>
+            <h4 class="hintText">hint :<b>this is hint</b></h4>
+            <h4 class="guessText">Incrocect Guess <b>0/6</b></h4>
+            <div class="keyboard"></div>
+        </div>
     </div>
+    <script src="./wordList.js"></script>
     <script>
-        const gamebox = document.querySelector(".gamebox button");
-        const gamemodal = document.querySelector(".gamemodal");
-        const gamemodalBtn = document.querySelector(".gamemodal button");
-        const start = () => {
-            setTimeout(() => {
-                gamemodal.classList.add("show");
-            }, 1000)
+        // variables
+        const keyboard = document.querySelector(".keyboard");
+        const hintText = document.querySelector(".hintText b")
+        const wordDisplay = document.querySelector(".wordDisplay");
+
+        for (let i = 97; i <= 122; i++) {
+            const button = document.createElement("button");
+            button.innerText = String.fromCharCode(i)
+            keyboard.appendChild(button)
+            // console.log(button)
         }
-        gamebox.addEventListener("click", start)
-        gamemodalBtn.addEventListener("click", () => {
-            gamemodal.classList.remove("show");
-        })
+        const randomWord = () => {
+            const { word, hint } = wordList[Math.floor(Math.random() * wordList.length)];
+            hintText.innerHTML = hint;
+            wordDisplay.innerHTML = word.split("").map(() => `<li class="letter"></li>`).join("");
+
+            // console.log(word);
+            // console.log(hint)
+        }
+        randomWord()
     </script>
 </body>
 
