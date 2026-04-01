@@ -61,6 +61,12 @@
             font-weight: bold;
         }
 
+        .wordDisplay .letter.guessed {
+            color: rgb(219, 110, 219);
+            border-color: transparent;
+            margin: -40px 0 30px;
+        }
+
         .gussed {
             color: red;
             font-size: 22px;
@@ -211,26 +217,47 @@
     </div>
     <script src="./wordList.js"></script>
     <script>
-        // variables
         const keyboard = document.querySelector(".keyboard");
-        const hintText = document.querySelector(".hintText b")
         const wordDisplay = document.querySelector(".wordDisplay");
+        const hintText = document.querySelector(".hintText b");
+        let currentWord;
+        const randomGuess = () => {
+            const { hint, word } = wordList[Math.floor(Math.random() * wordList.length)];
+            currentWord = word;
+            console.log(word);
+            hintText.innerHTML = hint;
+            wordDisplay.innerHTML = word.split("").map(() =>
+                `<li class="letter"></li>`
+            ).join("");
+        }
+
+        const initGame = (button, clickedletter) => {
+            // console.log(clickedletter);
+            // console.log(button);
+            if (currentWord.includes(clickedletter)) {
+                // console.log("word hia");
+                [...currentWord].forEach((letter, index) => {
+                    // console.log(letter, index);
+                    if (letter === clickedletter) {
+                        wordDisplay.querySelectorAll("li")[index].innerHTML = letter;
+                        wordDisplay.querySelectorAll("li")[index].classList.add("gussed");
+
+                    }
+                })
+            }
+            else {
+                console.log("word nhi hai ");
+            }
+
+        }
 
         for (let i = 97; i <= 122; i++) {
             const button = document.createElement("button");
-            button.innerText = String.fromCharCode(i)
-            keyboard.appendChild(button)
-            // console.log(button)
+            button.innerHTML = String.fromCharCode(i);
+            keyboard.appendChild(button);
+            button.addEventListener("click", e => initGame(e.target, String.fromCharCode(i)))
         }
-        const randomWord = () => {
-            const { word, hint } = wordList[Math.floor(Math.random() * wordList.length)];
-            hintText.innerHTML = hint;
-            wordDisplay.innerHTML = word.split("").map(() => `<li class="letter"></li>`).join("");
-
-            // console.log(word);
-            // console.log(hint)
-        }
-        randomWord()
+        randomGuess();
     </script>
 </body>
 
