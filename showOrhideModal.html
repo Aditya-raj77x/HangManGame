@@ -119,6 +119,23 @@
             /* width: 45px; */
         }
 
+        .keyboard button:disabled {
+            /* opacity: 0.4; */
+            pointer-events: none;
+        }
+
+        .keyboard button:disabled::after {
+            content: "X";
+            color: red;
+            position: absolute;
+            font-size: 28px;
+            height: 100%;
+            width: 100%;
+            opacity: 1;
+            left: 0;
+            top: 0;
+        }
+
         .gameModal {
             position: fixed;
             z-index: 999;
@@ -132,6 +149,12 @@
             align-items: center;
             pointer-events: none;
             opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .gameModal.show {
+            pointer-events: auto;
+            opacity: 1;
         }
 
         .gameModal img {
@@ -220,37 +243,59 @@
     <script>
         const keyboard = document.querySelector(".keyboard");
         const wordDisplay = document.querySelector(".wordDisplay");
-        const hintText = document.querySelector(".hintText b");
         const guessText = document.querySelector(".guessText b");
-        const hangManPic = document.querySelector(".hangmanBox img");
-        let currentWord, wrongGuesee = 0;
+        const imageDisplay = document.querySelector(".hangmanBox img");
+        const gameModal = document.querySelector(".gameModal");
+        let currentWord, wrongGuess = 0, correctLetter = [];
         const maxGuess = 6;
-        const randomGuess = () => {
-            const { hint, word } = wordList[Math.floor(Math.random() * wordList.length)];
-            // console.log(hint);
+        const randomWord = () => {
+            const { word, hint } = wordList[Math.floor(Math.random() * wordList.length)]
             console.log(word);
             currentWord = word;
-            hintText.innerHTML = hint;
+            document.querySelector(".hintText b").innerHTML = hint;
             wordDisplay.innerHTML = word.split("").map(() =>
-                `<li class="letter"></li>`
+                '<li class="letter"></li>'
             ).join("");
-        }
 
-        const initGame = (button, letterpressed) => {
-            if (currentWord.includes(letterpressed)) {
-                // console.log("key found")
+        }
+        const gameOver = (isVictory) => {
+            setTimeout(() => {
+                const modalText = isVictory ? 'You found the word' : 'You did not found the word';
+                const winLose = isVictory ? 'You Win ' : 'You Lost';
+                const pic = isVictory ? `assets/Victory.gif` : `assets/lost.gif`;
+                gameModal.querySelector("p").innerHTML = modalText;
+                gameModal.querySelector("h4").innerHTML = winLose;
+                gameModal.querySelector("img").src = pic;
+
+
+                gameModal.classList.add("show");
+            }, 300);
+        }
+        const initGame = (button, pressedletter) => {
+            if (currentWord.includes(pressedletter)) {
                 [...currentWord].forEach((letter, index) => {
-                    if (letter === letterpressed) {
-                        wordDisplay.querySelectorAll("li")[index].innerHTML = letter;
+                    if (letter === pressedletter) {
+                        correctLetter.push(letter);
+                        document.querySelectorAll(".wordDisplay li")[index].innerHTML = pressedletter;
+
                     }
-                })
+                });
             }
             else {
-                wrongGuesee++;
-                hangManPic.src = `assets/hangman-${wrongGuesee}.svg`;
-
+                wrongGuess++;
+                imageDisplay.src = `assets/hangman-${wrongGuess}.svg`;
             }
-            guessText.innerText = `${wrongGuesee}/${maxGuess}`;
+            button.disabled = true;
+            guessText.innerHTML = `${wrongGuess}/${maxGuess}`;
+            // lost the game
+            if (wrongGuess === maxGuess) {
+                gameOver(false);
+            }
+            // win the game 
+            if (correctLetter.length === currentWord.length) {
+                gameOver(true);
+            }
+            // console.log(correctLetter);
         }
 
         for (let i = 97; i <= 122; i++) {
@@ -259,7 +304,7 @@
             keyboard.appendChild(button);
             button.addEventListener("click", e => initGame(e.target, String.fromCharCode(i)));
         }
-        randomGuess();
+        randomWord();
     </script>
 </body>
 
