@@ -242,69 +242,83 @@
     <script src="./wordList.js"></script>
     <script>
         const keyboard = document.querySelector(".keyboard");
+        const hintText = document.querySelector(".hintText b");
         const wordDisplay = document.querySelector(".wordDisplay");
+        const hangmanPic = document.querySelector(".hangmanBox img");
         const guessText = document.querySelector(".guessText b");
-        const imageDisplay = document.querySelector(".hangmanBox img");
         const gameModal = document.querySelector(".gameModal");
-        let currentWord, wrongGuess = 0, correctLetter = [];
+        const playAgain = document.querySelector(".playAgain");
+        let currentWord, wrongGuess = 0, correctletter = [];
         const maxGuess = 6;
+
+        const resetGame = () => {
+            wrongGuess = 0;
+            correctletter = [];
+            hangmanPic.src = `assets/hangman-${wrongGuess}.svg`;
+            guessText.innerHTML = `${wrongGuess}/${maxGuess}`;
+            keyboard.querySelectorAll("button").forEach(btn => btn.disabled = false);
+            wordDisplay.innerHTML = currentWord.split("").map(() => `<li class="letter"></li>`).join("");
+            gameModal.classList.remove("show");
+
+        }
         const randomWord = () => {
             const { word, hint } = wordList[Math.floor(Math.random() * wordList.length)]
-            console.log(word);
+            hintText.innerHTML = hint
             currentWord = word;
-            document.querySelector(".hintText b").innerHTML = hint;
-            wordDisplay.innerHTML = word.split("").map(() =>
-                '<li class="letter"></li>'
-            ).join("");
+            console.log(word);
+
+            resetGame();
+
 
         }
         const gameOver = (isVictory) => {
             setTimeout(() => {
-                const modalText = isVictory ? 'You found the word' : 'You did not found the word';
-                const winLose = isVictory ? 'You Win ' : 'You Lost';
-                const pic = isVictory ? `assets/Victory.gif` : `assets/lost.gif`;
-                gameModal.querySelector("p").innerHTML = modalText;
-                gameModal.querySelector("h4").innerHTML = winLose;
-                gameModal.querySelector("img").src = pic;
-
-
+                if (isVictory) {
+                    document.querySelector(".gameModal h4").innerHTML = "Congrats";
+                    document.querySelector(".gameModal p").innerHTML = "hurray you win the game";
+                    document.querySelector(".gameModal img").src = `assets/victory.gif`;
+                }
+                else {
+                    document.querySelector(".gameModal h4").innerHTML = "You Lost";
+                    document.querySelector(".gameModal p").innerHTML = `Correct word was <b>${currentWord}</b>`;
+                    document.querySelector(".gameModal img").src = `assets/lost.gif`;
+                }
                 gameModal.classList.add("show");
-            }, 300);
+            }, 700);
         }
-        const initGame = (button, pressedletter) => {
-            if (currentWord.includes(pressedletter)) {
-                [...currentWord].forEach((letter, index) => {
-                    if (letter === pressedletter) {
-                        correctLetter.push(letter);
-                        document.querySelectorAll(".wordDisplay li")[index].innerHTML = pressedletter;
 
+        const initGame = (button, pressedLetter) => {
+            if (currentWord.includes(pressedLetter)) {
+                [...currentWord].forEach((letter, index) => {
+                    if (letter === pressedLetter) {
+                        correctletter.push(letter);
+                        wordDisplay.querySelectorAll("li")[index].innerHTML = letter;
                     }
-                });
+                })
             }
             else {
                 wrongGuess++;
-                imageDisplay.src = `assets/hangman-${wrongGuess}.svg`;
+                hangmanPic.src = `assets/hangman-${wrongGuess}.svg`;
             }
-            button.disabled = true;
             guessText.innerHTML = `${wrongGuess}/${maxGuess}`;
-            // lost the game
+            button.disabled = true;
+            if (correctletter.length === currentWord.length) {
+                gameOver(true);
+            }
             if (wrongGuess === maxGuess) {
                 gameOver(false);
             }
-            // win the game 
-            if (correctLetter.length === currentWord.length) {
-                gameOver(true);
-            }
-            // console.log(correctLetter);
-        }
 
+        }
         for (let i = 97; i <= 122; i++) {
             const button = document.createElement("button");
             button.innerHTML = String.fromCharCode(i);
             keyboard.appendChild(button);
+            // console.log(button);
             button.addEventListener("click", e => initGame(e.target, String.fromCharCode(i)));
         }
         randomWord();
+        playAgain.addEventListener("click", randomWord);
     </script>
 </body>
 
